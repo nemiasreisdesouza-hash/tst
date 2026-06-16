@@ -262,32 +262,260 @@
     .hero-badges strong { color: var(--orange); }
 
     /* ===== HERO VIDEO ===== */
-.video-clean {
+.hero-video {
+  margin: 44px auto 52px;
+  max-width: 780px;
+  padding: 0 16px;
+}
+
+.video-wrapper {
   position: relative;
-  max-width: 820px;
-  margin: 40px auto;
-  border-radius: 16px;
-  overflow: hidden;
-  cursor: pointer;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.15);
-}
-
-.video-clean img {
   width: 100%;
-  display: block;
+  padding-top: 56.25%;
+  border-radius: 20px;
+  overflow: hidden;
+  background: var(--navy);
+  box-shadow:
+    0 25px 60px rgba(30, 58, 95, 0.18),
+    0 0 0 1px rgba(232, 119, 34, 0.08);
+  cursor: pointer;
+  transition: box-shadow .4s ease, transform .4s ease;
 }
 
-.play-btn {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: #E87722;
-  color: white;
-  font-size: 28px;
-  padding: 20px;
-  border-radius: 50%;
+.video-wrapper:hover {
+  box-shadow:
+    0 30px 70px rgba(30, 58, 95, 0.22),
+    0 0 0 1px rgba(232, 119, 34, 0.15);
+  transform: translateY(-2px);
 }
+
+/* --- Facade / Thumbnail --- */
+.video-facade {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #1E3A5F 0%, #152A46 100%);
+  transition: opacity .5s ease, visibility .5s ease;
+}
+
+.video-facade-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.65;
+  transition: opacity .5s ease, transform .7s cubic-bezier(.25,.46,.45,.94);
+}
+
+.video-wrapper:hover .video-facade-img {
+  opacity: 0.82;
+  transform: scale(1.04);
+}
+
+.video-facade::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, transparent 20%, rgba(21,42,70,0.55) 100%),
+    linear-gradient(180deg, transparent 50%, rgba(21,42,70,0.4) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- Botão Play --- */
+.video-play-btn {
+  position: relative;
+  z-index: 3;
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  background: var(--orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 35px rgba(232, 119, 34, 0.5);
+  transition: all .35s cubic-bezier(.25,.46,.45,.94);
+  animation: playPulse 2.8s ease-in-out infinite;
+}
+
+.video-play-btn svg {
+  width: 34px;
+  height: 34px;
+  fill: #fff;
+  margin-left: 4px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+}
+
+.video-wrapper:hover .video-play-btn {
+  transform: scale(1.12);
+  box-shadow: 0 14px 45px rgba(232, 119, 34, 0.65);
+}
+
+@keyframes playPulse {
+  0%, 100% { box-shadow: 0 10px 35px rgba(232,119,34,0.5), 0 0 0 0 rgba(232,119,34,0.35); }
+  50%      { box-shadow: 0 10px 35px rgba(232,119,34,0.5), 0 0 0 18px rgba(232,119,34,0); }
+}
+
+/* --- Label inferior --- */
+.video-label {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  transition: all .3s ease;
+}
+
+.video-wrapper:hover .video-label {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.video-label svg { flex-shrink: 0; }
+
+.video-label span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+/* --- Duração badge --- */
+.video-duration {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Estado ativo (iframe carregado) --- */
+.video-wrapper.is-playing .video-facade {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.video-wrapper.is-playing {
+  cursor: default;
+}
+
+.video-wrapper.is-playing:hover {
+  transform: none;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  z-index: 1;
+}
+
+/* ===== RESPONSIVO ===== */
+@media (max-width: 720px) {
+  .hero-video {
+    margin: 32px auto 36px;
+    padding: 0 10px;
+  }
+
+  .video-wrapper {
+    border-radius: 16px;
+    box-shadow:
+      0 16px 40px rgba(30, 58, 95, 0.16),
+      0 0 0 1px rgba(232, 119, 34, 0.06);
+  }
+
+  .video-play-btn {
+    width: 68px;
+    height: 68px;
+  }
+
+  .video-play-btn svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .video-label {
+    bottom: 14px;
+    left: 14px;
+    padding: 8px 14px;
+    gap: 8px;
+  }
+
+  .video-label span {
+    font-size: 11.5px;
+  }
+
+  .video-duration {
+    bottom: 14px;
+    right: 14px;
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-video {
+    margin: 24px auto 28px;
+    padding: 0 6px;
+  }
+
+  .video-wrapper {
+    border-radius: 14px;
+  }
+
+  .video-play-btn {
+    width: 58px;
+    height: 58px;
+  }
+
+  .video-play-btn svg {
+    width: 24px;
+    height: 24px;
+    margin-left: 3px;
+  }
+
+  .video-label {
+    bottom: 12px;
+    left: 12px;
+    padding: 7px 12px;
+  }
+
+  .video-label span {
+    font-size: 10.5px;
+  }
+
+  .video-duration {
+    bottom: 12px;
+    right: 12px;
+  }
+}
+
     /* ===== SECTIONS GENERAL ===== */
     section { padding: 100px 0; }
     .section-tag {
@@ -954,12 +1182,31 @@
         Da pré-campanha ao mandato — a gente cuida da sua imagem!
       </p>
       
-   <!-- VIDEO PRINCIPAL -->      
-<div class="video-clean" onclick="window.open('https://www.youtube.com/embed/xr83HGvhtJ0', '_blank')">
-  <img src="https://img.youtube.com/vi/xr83HGvhtJ0/hqdefault.jpg" alt="video">
-
-  <div class="play-btn">▶</div>
+     <!-- VIDEO HERO -->
+<div class="hero-video">
+  <div class="video-wrapper" id="videoWrapper" data-video-id="xr83HGvhtJ0">
+    <div class="video-facade">
+      <img
+        class="video-facade-img"
+        src="https://img.youtube.com/vi/xr83HGvhtJ0/maxresdefault.jpg"
+        alt="Assista ao vídeo de apresentação da Agência Livre Imagem"
+        loading="lazy"
+      />
+      <div class="video-play-btn">
+        <svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
+      </div>
+      <div class="video-label">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="23 7 16 12 23 17 23 7"/>
+          <rect x="1" y="5" width="15" height="14" rx="2"/>
+        </svg>
+        <span>Assistir apresentação</span>
+      </div>
+      <div class="video-duration">▶ Vídeo</div>
+    </div>
+  </div>
 </div>
+
       <div class="hero-ctas">
         <a class="btn btn-primary" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20agendar%20uma%20reuni%C3%A3o%20de%20triagem%20com%20a%20Ag%C3%AAncia%20Livre%20Imagem." target="_blank" rel="noopener">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
@@ -1501,6 +1748,39 @@ Um dos reflexos foi o reconhecimento de seu nome entre os principais representan
         }
       });
     });
+
+// ===== VIDEO PLAYER FACADE (Lazy Load) =====
+(function() {
+  const wrapper = document.getElementById('videoWrapper');
+  if (!wrapper) return;
+
+  // Fallback: se maxresdefault não carregar, tenta hqdefault
+  const facadeImg = wrapper.querySelector('.video-facade-img');
+  if (facadeImg) {
+    facadeImg.addEventListener('error', function() {
+      const videoId = wrapper.getAttribute('data-video-id');
+      this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    });
+  }
+
+  // Clique para carregar o iframe
+  wrapper.addEventListener('click', function handleClick() {
+    const videoId = this.getAttribute('data-video-id');
+
+    const iframe = document.createElement('iframe');
+    iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&color=white`;
+    iframe.title = 'Vídeo de apresentação';
+    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+    iframe.allowFullscreen = true;
+    iframe.setAttribute('loading', 'lazy');
+
+    this.appendChild(iframe);
+    this.classList.add('is-playing');
+
+    // Remove o listener após o primeiro clique
+    this.removeEventListener('click', handleClick);
+  });
+})();
   </script>
 </body>
 </html>
