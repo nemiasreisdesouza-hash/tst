@@ -12,17 +12,31 @@
   <style>
     /* ===== RESET & BASE ===== */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+      position: relative;
+    }
+
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+
     body {
       font-family: 'Montserrat', system-ui, -apple-system, sans-serif;
       color: #1E3A5F;
       background: #ffffff;
       line-height: 1.6;
-      overflow-x: hidden;
     }
-    img { max-width: 100%; display: block; }
+
+    img { max-width: 100%; display: block; height: auto; }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; cursor: pointer; border: none; background: none; }
+
+    /* Garantir que nenhum elemento estoure a tela */
+    * {
+      max-width: 100%;
+    }
 
     :root {
       --orange: #E87722;
@@ -45,12 +59,19 @@
       --shadow-lg: 0 20px 60px rgba(30, 58, 95, 0.15);
     }
 
-    .container { width: 100%; max-width: var(--container); margin: 0 auto; padding: 0 24px; }
+    .container {
+      width: 100%;
+      max-width: var(--container);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
     .accent { color: var(--orange); }
 
     /* ===== HEADER ===== */
     .header {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      width: 100%;
       background: rgba(255,255,255,0.92);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
@@ -63,7 +84,7 @@
       height: 80px;
     }
     .logo-link { display: inline-block; }
-    .logo { width: 200px; height: auto; display: block; }
+    .logo { width: 200px; height: auto; display: block; max-width: 100%; }
 
     .nav { display: flex; align-items: center; gap: 32px; }
     .nav a {
@@ -146,17 +167,18 @@
     /* ===== HERO ===== */
     .hero {
       position: relative;
-      padding: 130px 0 80px;
+      min-height: auto;
+      padding: 140px 0 70px;
       background: linear-gradient(135deg, #ffffff 0%, #FFF8F2 50%, #FEE8D6 100%);
       overflow: hidden;
+      width: 100%;
     }
-
     @media (min-width: 1024px) {
       .hero { min-height: 92vh; }
     }
-
     .hero-bg {
       position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+      width: 100%;
     }
     .hero-bg::before {
       content: ''; position: absolute;
@@ -172,6 +194,7 @@
     }
     .hero-bg-wave {
       position: absolute; left: 0; right: 0; bottom: 0; height: 80px;
+      width: 100%;
       background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'><path d='M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z' fill='%23ffffff'/></svg>") center bottom / cover no-repeat;
     }
 
@@ -191,10 +214,12 @@
     }
 
     .hero-title {
-      font-size: clamp(1.85rem, 4.5vw, 3.5rem);
-      font-weight: 900; line-height: 1.12;
+      font-size: clamp(2rem, 5vw, 3.75rem);
+      font-weight: 900; line-height: 1.1;
       color: var(--navy);
-      margin-bottom: 20px;
+      margin-bottom: 24px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
     .hero-title .accent {
       display: block;
@@ -204,217 +229,15 @@
     }
 
     .hero-sub {
-      font-size: clamp(0.95rem, 1.4vw, 1.15rem);
-      color: var(--gray-700); max-width: 680px;
-      margin: 0 auto 32px;
+      font-size: clamp(1rem, 1.5vw, 1.2rem);
+      color: var(--gray-700); max-width: 700px;
+      margin: 0 auto 40px;
     }
 
-    /* ===== HERO VIDEO — CLEAN ===== */
-    .hero-video {
-      width: 100%;
-      max-width: 800px;
-      margin: 32px auto 36px;
-      padding: 0 16px;
-    }
-
-    .video-wrapper {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      border-radius: 22px;
-      overflow: hidden;
-      background: #0f2238;
-      box-shadow:
-        0 24px 60px rgba(30, 58, 95, 0.20),
-        0 0 0 1px rgba(232, 119, 34, 0.10);
-      isolation: isolate;
-      cursor: pointer;
-      transition: box-shadow .35s ease, transform .35s ease;
-    }
-
-    .video-wrapper:hover {
-      box-shadow:
-        0 30px 70px rgba(30, 58, 95, 0.26),
-        0 0 0 1px rgba(232, 119, 34, 0.18);
-      transform: translateY(-3px);
-    }
-
-    .video-wrapper.is-playing {
-      cursor: default;
-      transform: none !important;
-    }
-
-    /* iframe injetado via JS */
-    .video-wrapper iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      display: block;
-      z-index: 1;
-    }
-
-    /* fachada */
-    .video-facade {
-      position: absolute;
-      inset: 0;
-      z-index: 2;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0f2238;
-      transition: opacity .45s ease, visibility .45s ease;
-    }
-
-    .video-wrapper.is-playing .video-facade {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-    }
-
-    .video-facade-img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      opacity: 0.72;
-      transition: opacity .4s ease, transform .6s cubic-bezier(.25,.46,.45,.94);
-    }
-
-    .video-wrapper:not(.is-playing):hover .video-facade-img {
-      opacity: 0.85;
-      transform: scale(1.03);
-    }
-
-    /* overlay gradiente suave */
-    .video-facade::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        180deg,
-        rgba(10,20,35,0.08) 0%,
-        rgba(10,20,35,0.15) 55%,
-        rgba(10,20,35,0.32) 100%
-      );
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* botão play */
-    .video-play-btn {
-      position: relative;
-      z-index: 3;
-      width: 80px;
-      height: 80px;
-      border-radius: 50%;
-      background: var(--orange);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 10px 32px rgba(232,119,34,0.45);
-      transition: transform .28s ease, background .28s ease, box-shadow .28s ease;
-      animation: playPulse 2.8s ease-in-out infinite;
-      flex-shrink: 0;
-    }
-
-    .video-play-btn svg {
-      width: 30px;
-      height: 30px;
-      fill: #fff;
-      margin-left: 4px;
-    }
-
-    .video-wrapper:not(.is-playing):hover .video-play-btn {
-      transform: scale(1.1);
-      background: var(--orange-dark);
-      box-shadow: 0 14px 40px rgba(232,119,34,0.6);
-    }
-
-    @keyframes playPulse {
-      0%,100% { box-shadow: 0 10px 32px rgba(232,119,34,0.45), 0 0 0 0 rgba(232,119,34,0.3); }
-      50%      { box-shadow: 0 10px 32px rgba(232,119,34,0.45), 0 0 0 16px rgba(232,119,34,0); }
-    }
-
-    /* label rodapé */
-    .video-label {
-      position: absolute;
-      bottom: 18px;
-      left: 18px;
-      z-index: 3;
-      background: rgba(255,255,255,0.13);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.14);
-      color: #fff;
-      font-size: 12.5px;
-      font-weight: 700;
-      padding: 8px 16px;
-      border-radius: 999px;
-      letter-spacing: 0.2px;
-      white-space: nowrap;
-      pointer-events: none;
-    }
-
-    /* ===== RESPONSIVO VÍDEO ===== */
-    @media (max-width: 720px) {
-      .hero-video {
-        margin: 24px auto 28px;
-        padding: 0 8px;
-      }
-      .video-wrapper {
-        border-radius: 16px;
-        box-shadow: 0 14px 40px rgba(30,58,95,0.16);
-      }
-      .video-play-btn {
-        width: 64px;
-        height: 64px;
-      }
-      .video-play-btn svg {
-        width: 25px;
-        height: 25px;
-      }
-      .video-label {
-        bottom: 12px;
-        left: 12px;
-        font-size: 11px;
-        padding: 7px 13px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .hero-video {
-        padding: 0 4px;
-        margin: 20px auto 22px;
-      }
-      .video-wrapper {
-        border-radius: 13px;
-      }
-      .video-play-btn {
-        width: 54px;
-        height: 54px;
-      }
-      .video-play-btn svg {
-        width: 21px;
-        height: 21px;
-        margin-left: 3px;
-      }
-      .video-label {
-        font-size: 10px;
-        padding: 6px 11px;
-        bottom: 10px;
-        left: 10px;
-      }
-    }
-
-    /* ===== HERO CTAs ===== */
     .hero-ctas {
       display: flex; gap: 16px;
       justify-content: center; flex-wrap: wrap;
-      margin-bottom: 40px;
+      margin-bottom: 48px;
     }
 
     .btn {
@@ -423,6 +246,7 @@
       font-weight: 700; font-size: 15px;
       transition: all .25s ease;
       cursor: pointer;
+      max-width: 100%;
     }
     .btn-primary {
       background: var(--orange); color: #fff;
@@ -442,6 +266,7 @@
       transform: translateY(-3px);
     }
     .btn-big { padding: 20px 36px; font-size: 16px; }
+
     .btn-outline {
       background: transparent; color: var(--navy);
       border: 2px solid var(--navy);
@@ -466,8 +291,154 @@
     }
     .hero-badges strong { color: var(--orange); }
 
+    /* ===== HERO VIDEO ===== */
+    .hero-video {
+      width: 100%;
+      max-width: 860px;
+      margin: 36px auto 28px;
+      padding: 0 12px;
+      background: transparent;
+    }
+
+    .video-shell {
+      width: 100%;
+      background: transparent;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      height: auto;
+      min-height: 0;
+      border-radius: 22px;
+      overflow: hidden;
+      background: #0f2238;
+      box-shadow: 0 20px 60px rgba(30, 58, 95, 0.18);
+      isolation: isolate;
+      cursor: pointer;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .video-wrapper:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 26px 70px rgba(30, 58, 95, 0.22);
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .video-facade {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      background: #132845;
+      transition: opacity .4s ease, visibility .4s ease;
+    }
+
+    .video-facade-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s ease;
+    }
+
+    .video-wrapper:hover .video-facade-img {
+      transform: scale(1.04);
+    }
+
+    .video-facade::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(10, 20, 35, 0.10) 0%,
+        rgba(10, 20, 35, 0.18) 55%,
+        rgba(10, 20, 35, 0.32) 100%
+      );
+      pointer-events: none;
+    }
+
+    .video-play-btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      z-index: 3;
+      transform: translate(-50%, -50%);
+      width: 78px;
+      height: 78px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 12px 30px rgba(232, 119, 34, 0.45);
+      transition: transform .25s ease, background .25s ease;
+      animation: playPulse 2.8s ease-in-out infinite;
+    }
+
+    .video-wrapper:hover .video-play-btn {
+      transform: translate(-50%, -50%) scale(1.1);
+      background: var(--orange-dark);
+    }
+
+    .video-play-btn svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+      margin-left: 3px;
+    }
+
+    @keyframes playPulse {
+      0%, 100% { box-shadow: 0 12px 30px rgba(232,119,34,0.45), 0 0 0 0 rgba(232,119,34,0.4); }
+      50%      { box-shadow: 0 12px 30px rgba(232,119,34,0.45), 0 0 0 18px rgba(232,119,34,0); }
+    }
+
+    .video-label {
+      position: absolute;
+      left: 16px;
+      bottom: 16px;
+      z-index: 3;
+      background: rgba(255,255,255,0.14);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      color: #fff;
+      padding: 9px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+
+    .video-wrapper.is-playing {
+      cursor: default;
+    }
+
+    .video-wrapper.is-playing:hover {
+      transform: none;
+    }
+
+    .video-wrapper.is-playing .video-facade {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     /* ===== SECTIONS GENERAL ===== */
-    section { padding: 100px 0; }
+    section {
+      padding: 100px 0;
+      width: 100%;
+      overflow: hidden;
+    }
     .section-tag {
       display: inline-block;
       font-size: 12px; font-weight: 800; letter-spacing: 3px;
@@ -479,8 +450,12 @@
       font-size: clamp(1.8rem, 4vw, 2.75rem);
       font-weight: 900; line-height: 1.15;
       color: var(--navy); margin-bottom: 20px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
-    .section-sub { font-size: 1.05rem; color: var(--gray-700); }
+    .section-sub {
+      font-size: 1.05rem; color: var(--gray-700);
+    }
 
     /* ===== ABOUT ===== */
     .about { background: var(--white); }
@@ -497,7 +472,8 @@
     .stat { text-align: center; }
     .stat-num {
       display: block;
-      font-size: 2rem; font-weight: 900; color: var(--orange); line-height: 1;
+      font-size: 2rem; font-weight: 900; color: var(--orange);
+      line-height: 1;
     }
     .stat-label {
       display: block; margin-top: 8px;
@@ -524,6 +500,7 @@
       width: 100%;
       max-width: 420px;
       margin: 0 auto;
+      overflow: hidden;
     }
     .about-card::before {
       content: ''; position: absolute;
@@ -532,22 +509,36 @@
       top: -30px; right: -30px;
     }
     .about-card .logo-about {
-      width: 100%; max-width: 280px; height: auto;
-      margin: 0 auto 20px; display: block;
+      width: 100%;
+      max-width: 280px;
+      height: auto;
+      margin: 0 auto 20px;
+      display: block;
     }
     .about-card-text {
       font-family: 'Montserrat', sans-serif;
-      font-weight: 600; font-size: 14px;
-      color: var(--navy); letter-spacing: 2.5px;
-      margin-top: 12px; text-transform: uppercase; text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--navy);
+      letter-spacing: 2.5px;
+      margin-top: 12px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    @media (max-width: 480px) {
+      .about-card-text { font-size: 12px; letter-spacing: 1.5px; }
     }
 
     /* ===== SERVICES ===== */
-    .services { background: var(--gray-50); position: relative; }
+    .services {
+      background: var(--gray-50);
+      position: relative;
+    }
     .services-alt { background: var(--white); }
 
     .services-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
     }
     .service-card {
       background: var(--white);
@@ -556,7 +547,10 @@
       transition: all .3s ease;
       position: relative; overflow: hidden;
     }
-    .service-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
     .service-card::before {
       content: ''; position: absolute;
       top: 0; left: 0; width: 100%; height: 4px;
@@ -567,133 +561,306 @@
       background: rgba(232,119,34,0.1);
       color: var(--icon-color, var(--orange));
       display: flex; align-items: center; justify-content: center;
-      margin-bottom: 24px; transition: all .3s;
+      margin-bottom: 24px;
+      transition: all .3s;
     }
     .service-icon svg { width: 28px; height: 28px; }
     .service-card:hover .service-icon {
-      background: var(--icon-color, var(--orange)); color: #fff; transform: rotate(-6deg);
+      background: var(--icon-color, var(--orange));
+      color: #fff;
+      transform: rotate(-6deg);
     }
-    .service-card h3 { font-size: 1.15rem; font-weight: 800; color: var(--navy); margin-bottom: 10px; }
-    .service-card p { font-size: 0.95rem; color: var(--gray-700); margin-bottom: 20px; }
+    .service-card h3 {
+      font-size: 1.15rem; font-weight: 800;
+      color: var(--navy); margin-bottom: 10px;
+    }
+    .service-card p {
+      font-size: 0.95rem; color: var(--gray-700);
+      margin-bottom: 20px;
+    }
     .service-num {
       position: absolute; top: 20px; right: 24px;
-      font-size: 3rem; font-weight: 900; color: var(--gray-100); line-height: 1;
+      font-size: 3rem; font-weight: 900;
+      color: var(--gray-100);
+      line-height: 1;
     }
 
     /* ===== GRAPHIC GRID ===== */
-    .graphic-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .graphic-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
     .graphic-item { text-align: center; }
+
     .graphic-card {
-      background: var(--white); border-radius: var(--radius);
+      background: var(--white);
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       transition: all .35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      overflow: hidden; display: flex; flex-direction: column;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    .graphic-item:hover .graphic-card { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+
+    .graphic-item:hover .graphic-card {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+    }
+
     .graphic-img-wrapper {
-      position: relative; width: 100%; aspect-ratio: 4 / 3;
-      overflow: hidden; background: var(--gray-100);
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      background: var(--gray-100);
     }
+
     .graphic-img {
-      width: 100%; height: 100%; object-fit: cover;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
       transition: transform .5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-    .graphic-item:hover .graphic-img { transform: scale(1.06); }
-    .graphic-img-overlay {
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 50%, rgba(30, 58, 95, 0.12) 100%);
-      pointer-events: none; transition: opacity .35s ease;
+
+    .graphic-item:hover .graphic-img {
+      transform: scale(1.06);
     }
+
+    .graphic-img-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        transparent 50%,
+        rgba(30, 58, 95, 0.12) 100%
+      );
+      pointer-events: none;
+      transition: opacity .35s ease;
+    }
+
     .graphic-item:hover .graphic-img-overlay {
       opacity: 0.7;
-      background: linear-gradient(180deg, rgba(232, 119, 34, 0.06) 0%, rgba(30, 58, 95, 0.22) 100%);
+      background: linear-gradient(
+        180deg,
+        rgba(232, 119, 34, 0.06) 0%,
+        rgba(30, 58, 95, 0.22) 100%
+      );
     }
+
     .graphic-card-info {
-      padding: 20px 22px 24px; display: flex;
-      flex-direction: column; align-items: center; gap: 8px;
+      padding: 20px 22px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
     }
+
     .graphic-card-icon {
-      width: 42px; height: 42px; border-radius: 12px;
-      background: rgba(232, 119, 34, 0.1); color: var(--orange);
-      display: flex; align-items: center; justify-content: center;
-      margin-top: -18px; position: relative; z-index: 2;
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: rgba(232, 119, 34, 0.1);
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -18px;
+      position: relative;
+      z-index: 2;
       box-shadow: 0 4px 12px rgba(30, 58, 95, 0.12);
       transition: all .3s ease;
     }
+
     .graphic-card-icon svg { width: 22px; height: 22px; }
-    .graphic-item:hover .graphic-card-icon { background: var(--orange); color: #fff; transform: translateY(-4px); }
-    .graphic-card-info h4 { font-size: 1.05rem; font-weight: 800; color: var(--navy); margin: 0; }
-    .graphic-card-info p { font-size: 0.88rem; color: var(--gray-500); line-height: 1.5; margin: 0; }
+
+    .graphic-item:hover .graphic-card-icon {
+      background: var(--orange);
+      color: #fff;
+      transform: translateY(-4px);
+    }
+
+    .graphic-card-info h4 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--navy);
+      margin: 0;
+    }
+
+    .graphic-card-info p {
+      font-size: 0.88rem;
+      color: var(--gray-500);
+      line-height: 1.5;
+      margin: 0;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
 
     /* ===== PORTFOLIO ===== */
-    .portfolio { background: linear-gradient(180deg, var(--white) 0%, var(--gray-50) 100%); }
+    .portfolio {
+      background: linear-gradient(180deg, var(--white) 0%, var(--gray-50) 100%);
+    }
+
     .portfolio-filters {
-      display: flex; flex-wrap: wrap; justify-content: center;
-      gap: 10px; margin-bottom: 60px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 60px;
     }
+
     .filter-btn {
-      font-family: 'Montserrat', sans-serif; font-size: 13.5px;
-      font-weight: 700; padding: 12px 24px; border-radius: 999px;
-      color: var(--gray-700); background: var(--gray-100);
-      border: 2px solid transparent; transition: all .25s ease; cursor: pointer;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 12px 24px;
+      border-radius: 999px;
+      color: var(--gray-700);
+      background: var(--gray-100);
+      border: 2px solid transparent;
+      transition: all .25s ease;
+      cursor: pointer;
+      letter-spacing: 0.3px;
     }
-    .filter-btn:hover { color: var(--orange); background: rgba(232, 119, 34, 0.08); }
+
+    .filter-btn:hover {
+      color: var(--orange);
+      background: rgba(232, 119, 34, 0.08);
+    }
+
     .filter-btn.active {
-      color: #fff; background: var(--orange); border-color: var(--orange);
+      color: #fff;
+      background: var(--orange);
+      border-color: var(--orange);
       box-shadow: 0 6px 18px rgba(232, 119, 34, 0.32);
     }
-    .portfolio-list { display: flex; flex-direction: column; gap: 60px; }
+
+    .portfolio-list {
+      display: flex;
+      flex-direction: column;
+      gap: 60px;
+    }
+
     .portfolio-case.filter-out { display: none !important; }
+
     .portfolio-case.filter-in {
       animation: filterInCase .6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     }
+
     @keyframes filterInCase {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
     }
+
     .portfolio-case {
-      background: var(--white); border-radius: 24px; box-shadow: var(--shadow);
-      display: grid; grid-template-columns: 1.25fr 1fr;
-      gap: 52px; align-items: center; padding: 36px;
+      background: var(--white);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1.25fr 1fr;
+      gap: 52px;
+      align-items: center;
+      padding: 36px;
       border: 1px solid rgba(30, 58, 95, 0.04);
       transition: all .4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      overflow: hidden; width: 100%;
+      overflow: hidden;
+      width: 100%;
     }
-    .portfolio-case:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); border-color: rgba(232, 119, 34, 0.18); }
+
+    .portfolio-case:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(232, 119, 34, 0.18);
+    }
+
     .case-visual { width: 100%; height: 100%; }
+
     .case-img-wrapper {
-      position: relative; width: 100%; aspect-ratio: 16 / 11;
-      border-radius: 18px; overflow: hidden; background: var(--navy);
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 11;
+      border-radius: 18px;
+      overflow: hidden;
+      background: var(--navy);
       box-shadow: 0 8px 26px rgba(30, 58, 95, 0.08);
     }
+
     .case-img {
-      position: absolute; inset: 0; width: 100%; height: 100%;
-      object-fit: cover; transition: transform .7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform .7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
+
     .portfolio-case:hover .case-img { transform: scale(1.04); }
-    .case-content { display: flex; flex-direction: column; gap: 22px; padding: 8px 0; }
-    .case-head { display: flex; flex-direction: column; gap: 10px; }
+
+    .case-content {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      padding: 8px 0;
+      min-width: 0;
+    }
+
+    .case-head {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .case-category {
-      display: inline-block; font-size: 11.5px; font-weight: 800;
-      letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--orange); background: rgba(232, 119, 34, 0.1);
-      padding: 6px 16px; border-radius: 999px; width: fit-content;
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--orange);
+      background: rgba(232, 119, 34, 0.1);
+      padding: 6px 16px;
+      border-radius: 999px;
+      width: fit-content;
     }
+
     .case-title {
-      font-size: clamp(1.4rem, 2.7vw, 1.95rem); font-weight: 900;
-      color: var(--navy); line-height: 1.22; letter-spacing: -0.5px;
+      font-size: clamp(1.4rem, 2.7vw, 1.95rem);
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.22;
+      letter-spacing: -0.5px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
-    .case-body { display: flex; flex-direction: column; gap: 14px; font-size: 0.98rem; color: var(--gray-700); line-height: 1.65; }
+
+    .case-body {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      font-size: 0.98rem;
+      color: var(--gray-700);
+      line-height: 1.65;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
     .case-body p { margin: 0; }
     .case-body strong { color: var(--navy); font-weight: 700; }
+
     .case-footer { margin-top: 6px; }
     .btn-sm { padding: 14px 26px; font-size: 14px; }
-    .portfolio-more { text-align: center; margin-top: 60px; }
+
+    .portfolio-more {
+      text-align: center;
+      margin-top: 60px;
+    }
 
     /* ===== CTA ===== */
     .cta {
       background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
-      position: relative; overflow: hidden; color: #fff;
+      position: relative; overflow: hidden;
+      color: #fff;
     }
     .cta::before {
       content: ''; position: absolute;
@@ -704,19 +871,27 @@
     .cta::after {
       content: ''; position: absolute;
       bottom: 0; left: 0; right: 0; height: 80px;
+      width: 100%;
       background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 80' preserveAspectRatio='none'><path d='M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z' fill='%23ffffff'/></svg>") center bottom / cover no-repeat;
       transform: scaleY(-1);
     }
     .cta-inner {
-      position: relative; z-index: 2; text-align: center;
-      max-width: 780px; padding: 20px 0;
+      position: relative; z-index: 2;
+      text-align: center; max-width: 780px;
+      padding: 20px 0;
     }
     .cta .section-tag { color: var(--wave-pink); }
     .cta-title {
-      font-size: clamp(1.8rem, 4vw, 2.75rem); font-weight: 900;
-      line-height: 1.15; margin: 20px 0 24px; color: #fff;
+      font-size: clamp(1.8rem, 4vw, 2.75rem);
+      font-weight: 900; line-height: 1.15;
+      margin: 20px 0 24px; color: #fff;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
     }
-    .cta-sub { font-size: 1.1rem; color: rgba(255,255,255,0.85); margin-bottom: 36px; }
+    .cta-sub {
+      font-size: 1.1rem; color: rgba(255,255,255,0.85);
+      margin-bottom: 36px;
+    }
     .cta .btn-primary {
       background: var(--orange); color: #fff;
       box-shadow: 0 14px 36px rgba(232,119,34,0.5);
@@ -726,32 +901,57 @@
       box-shadow: 0 14px 36px rgba(255,255,255,0.3);
     }
     .cta-contact {
-      margin-top: 28px; display: flex; gap: 14px; justify-content: center;
-      color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500; flex-wrap: wrap;
+      margin-top: 28px;
+      display: flex; gap: 14px; justify-content: center;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px; font-weight: 500;
+      flex-wrap: wrap;
     }
 
     /* ===== FOOTER ===== */
-    .footer { background: var(--navy-dark); color: rgba(255,255,255,0.8); padding: 60px 0 0; }
+    .footer {
+      background: var(--navy-dark); color: rgba(255,255,255,0.8);
+      padding: 60px 0 0;
+      width: 100%;
+      overflow: hidden;
+    }
     .footer-inner {
       display: grid; grid-template-columns: 1.3fr 1fr 1fr;
-      gap: 40px; align-items: center; padding-bottom: 40px;
+      gap: 40px; align-items: center;
+      padding-bottom: 40px;
       border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     .footer-brand { display: flex; flex-direction: column; align-items: flex-start; }
-    .logo-footer { height: 60px; width: auto; margin-bottom: 15px; }
-    .footer-brand p { font-size: 0.95rem; line-height: 1.6; color: rgba(255,255,255,0.6); }
-    .footer-links { display: flex; flex-direction: column; gap: 10px; }
-    .footer-links a { color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 500; transition: color .2s; }
+    .logo-footer { height: 60px; width: auto; margin-bottom: 15px; max-width: 100%; }
+    .footer-brand p {
+      font-size: 0.95rem; line-height: 1.6;
+      color: rgba(255,255,255,0.6);
+    }
+    .footer-links {
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .footer-links a {
+      color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 500;
+      transition: color .2s;
+    }
     .footer-links a:hover { color: var(--orange-light); }
-    .footer-social { display: flex; gap: 12px; justify-content: flex-end; }
+    .footer-social {
+      display: flex; gap: 12px; justify-content: flex-end;
+    }
     .footer-social a {
       width: 42px; height: 42px; border-radius: 50%;
       background: rgba(255,255,255,0.08);
       display: flex; align-items: center; justify-content: center;
       color: #fff; transition: all .25s;
+      flex-shrink: 0;
     }
-    .footer-social a:hover { background: var(--orange); transform: translateY(-3px); }
-    .footer-copy { text-align: center; padding: 20px 0; font-size: 13px; color: rgba(255,255,255,0.5); }
+    .footer-social a:hover {
+      background: var(--orange); transform: translateY(-3px);
+    }
+    .footer-copy {
+      text-align: center; padding: 20px 0;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+    }
 
     /* ===== WHATSAPP FLOAT ===== */
     .whatsapp-float {
@@ -763,8 +963,12 @@
       font-weight: 700; font-size: 14px;
       transition: all .25s;
       animation: pulse 2.4s ease-in-out infinite;
+      max-width: calc(100% - 48px);
     }
-    .whatsapp-float:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 14px 38px rgba(37,211,102,0.55); }
+    .whatsapp-float:hover {
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 14px 38px rgba(37,211,102,0.55);
+    }
     .whatsapp-float svg { flex-shrink: 0; }
     .whatsapp-float span { white-space: nowrap; }
 
@@ -773,28 +977,42 @@
       50% { box-shadow: 0 10px 30px rgba(37,211,102,0.45), 0 0 0 14px rgba(37,211,102,0); }
     }
 
-    /* ===== ANIMAÇÕES ENTRADA ===== */
-    .fade-in { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    /* ===== ANIMAÇÕES DE ENTRADA ===== */
+    .fade-in {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-    /* ===== RESPONSIVO GERAL ===== */
+    /* ===== RESPONSIVO ===== */
     @media (max-width: 960px) {
       .services-grid { grid-template-columns: repeat(2, 1fr); }
       .graphic-grid { grid-template-columns: repeat(2, 1fr); }
-      .portfolio-case { grid-template-columns: 1fr; gap: 28px; padding: 26px; }
+
+      .portfolio-case {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding: 26px;
+      }
       .case-img-wrapper { aspect-ratio: 16 / 10; }
+
       .about-grid { grid-template-columns: 1fr; gap: 40px; }
       .footer-inner { grid-template-columns: 1fr 1fr; }
     }
 
     @media (max-width: 720px) {
+      .container { padding: 0 20px; }
+
       section { padding: 70px 0; }
       .header-inner { height: 70px; }
       .logo { width: 160px; }
+
       .menu-toggle { display: flex; }
       .nav {
         position: fixed; top: 70px; left: 0; right: 0;
-        background: #fff; flex-direction: column; gap: 0;
+        width: 100%;
+        background: #fff;
+        flex-direction: column; gap: 0;
         padding: 10px 24px 24px;
         border-bottom: 1px solid var(--gray-100);
         box-shadow: var(--shadow-lg);
@@ -804,28 +1022,82 @@
       .nav a { padding: 14px 0; width: 100%; text-align: center; border-bottom: 1px solid var(--gray-100); }
       .nav a::after { display: none; }
       .nav-cta { margin-top: 10px; }
-      .hero { padding: 110px 0 55px; }
+
+      .hero { padding: 110px 0 50px; }
       .hero-badges { flex-direction: column; align-items: center; }
-      .hero-badges li { width: fit-content; }
+      .hero-badges li { width: fit-content; max-width: 100%; }
+
+      /* Video mobile */
+      .hero-video {
+        margin: 28px auto 24px;
+        padding: 0 8px;
+      }
+      .video-wrapper { border-radius: 16px; }
+      .video-play-btn { width: 64px; height: 64px; }
+      .video-play-btn svg { width: 24px; height: 24px; }
+      .video-label {
+        left: 12px; bottom: 12px;
+        font-size: 11px; padding: 7px 12px;
+      }
+
       .services-grid { grid-template-columns: 1fr; }
       .graphic-grid { grid-template-columns: 1fr; gap: 24px; }
+
       .portfolio-list { gap: 40px; }
       .portfolio-case { padding: 22px; gap: 24px; border-radius: 20px; }
       .case-img-wrapper { aspect-ratio: 4 / 3; }
+
       .about-stats { grid-template-columns: 1fr; gap: 16px; }
+
       .footer-inner { grid-template-columns: 1fr; text-align: center; }
+      .footer-brand { align-items: center; }
       .footer-links { align-items: center; }
       .footer-social { justify-content: center; }
-      .whatsapp-float { padding: 14px; border-radius: 50%; width: 60px; height: 60px; justify-content: center; }
+
+      .whatsapp-float {
+        padding: 14px; border-radius: 50%;
+        width: 60px; height: 60px;
+        justify-content: center;
+        bottom: 20px; right: 20px;
+      }
       .whatsapp-float span { display: none; }
+
       .portfolio-filters { gap: 8px; margin-bottom: 36px; }
       .filter-btn { font-size: 12px; padding: 8px 16px; }
+
+      /* Reduzir tamanho dos efeitos de background no mobile */
+      .hero-bg::before {
+        width: 300px; height: 300px;
+        top: -100px; right: -80px;
+      }
+      .hero-bg::after {
+        width: 280px; height: 280px;
+        bottom: -100px; left: -80px;
+      }
+      .cta::before {
+        width: 300px; height: 300px;
+        top: -100px; right: -80px;
+      }
     }
 
     @media (max-width: 480px) {
-      .about-card { padding: 30px 24px; }
-      .about-card-text { font-size: 12px; letter-spacing: 1.5px; }
+      .container { padding: 0 16px; }
+
+      .hero-video { padding: 0 4px; margin: 24px auto 20px; }
+      .video-wrapper { border-radius: 14px; }
+      .video-play-btn { width: 56px; height: 56px; }
+      .video-play-btn svg { width: 22px; height: 22px; }
       .case-img-wrapper { aspect-ratio: 1 / 1; }
+      .about-card { padding: 30px 24px; }
+
+      .btn { padding: 14px 22px; font-size: 14px; }
+      .btn-big { padding: 18px 28px; font-size: 15px; }
+
+      .cta-contact {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .cta-contact span:nth-child(2) { display: none; }
     }
   </style>
 </head>
@@ -866,7 +1138,7 @@
             <a href="https://direitaesnews.com.br/" target="_blank" rel="noopener">Direita ES News</a>
             <a href="https://fococidades.com.br/" target="_blank" rel="noopener">Foco CidadES</a>
             <a href="https://jornalmerkato.com.br/" target="_blank" rel="noopener">Jornal Merkato</a>
-          </div>
+           </div>
         </div>
         <a href="#portfolio">Portfólio</a>
         <a href="#contato" class="nav-cta">Agendar reunião</a>
@@ -883,42 +1155,39 @@
     <div class="hero-bg"></div>
     <div class="hero-bg-wave"></div>
     <div class="container hero-inner">
-
       <span class="hero-tag">AGÊNCIA CRIATIVA</span>
-
       <h1 class="hero-title">
         Eleição é um desafio. Mandato é uma missão. Estamos prontos para ajudar você
         <span class="accent">em cada etapa dessa jornada.</span>
       </h1>
-
       <p class="hero-sub">
         Marketing Político e Planejamento Estratégico, Plano de Trabalho e Produção de Conteúdo.
         Da pré-campanha ao mandato — a gente cuida da sua imagem!
       </p>
 
-      <!-- ===== VIDEO HERO ===== -->
+      <!-- VIDEO HERO -->
       <div class="hero-video">
-        <div class="video-wrapper" id="videoWrapper" data-video-id="xr83HGvhtJ0">
-
-          <!-- Fachada (thumbnail + play) -->
-          <div class="video-facade" id="videoFacade">
-            <img
-              class="video-facade-img"
-              src="https://img.youtube.com/vi/xr83HGvhtJ0/maxresdefault.jpg"
-              alt="Vídeo de apresentação da Agência Livre Imagem"
-              loading="lazy"
-            />
-            <button class="video-play-btn" aria-label="Reproduzir vídeo">
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <polygon points="8,5 19,12 8,19"></polygon>
-              </svg>
-            </button>
-            <div class="video-label">▶ Assistir apresentação</div>
+        <div class="video-shell">
+          <div class="video-wrapper" id="videoWrapper" data-video-id="xr83HGvhtJ0">
+            <div class="video-facade">
+              <img
+                class="video-facade-img"
+                src="https://img.youtube.com/vi/xr83HGvhtJ0/maxresdefault.jpg"
+                alt="Vídeo de apresentação da Agência Livre Imagem"
+                loading="lazy"
+              />
+              <button class="video-play-btn" aria-label="Reproduzir vídeo" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <polygon points="8,5 19,12 8,19"></polygon>
+                </svg>
+              </button>
+              <div class="video-label">
+                <span>▶ Assistir apresentação</span>
+              </div>
+            </div>
           </div>
-
         </div>
       </div>
-      <!-- ===== FIM VIDEO ===== -->
 
       <div class="hero-ctas">
         <a class="btn btn-primary" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20agendar%20uma%20reuni%C3%A3o%20de%20triagem%20com%20a%20Ag%C3%AAncia%20Livre%20Imagem." target="_blank" rel="noopener">
@@ -927,13 +1196,11 @@
         </a>
         <a class="btn btn-ghost" href="#portfolio">Ver portfólio</a>
       </div>
-
       <ul class="hero-badges">
         <li><strong>Publicidade</strong> & propaganda</li>
         <li><strong>Marketing</strong> político</li>
         <li><strong>Marketing</strong> digital</li>
       </ul>
-
     </div>
   </section>
 
@@ -943,9 +1210,16 @@
       <div class="about-text">
         <span class="section-tag">SOBRE A AGÊNCIA</span>
         <h2 class="section-title">Eleição é um desafio. Mandato é uma missão.<span class="accent"> Estratégia é o caminho.</span></h2>
-        <p>A <strong>Agência Livre Imagem</strong> é especializada em Marketing Político e Gestão de Mandatos. Oferecemos soluções em planejamento estratégico, produção de conteúdo, comunicação institucional, gestão de crises e Assessoria Jurídica.</p>
-        <p>Trabalhamos para fortalecer a <strong>imagem pública</strong> de <strong>lideranças</strong>, construir conexões com a sociedade e transformar estratégias em resultados.</p>
-        <p>Da <strong>pré-campanha ao mandato</strong> — a gente cuida da sua imagem.</p>
+        <p>
+          A <strong>Agência Livre Imagem</strong>  é especializada em Marketing Político e Gestão de Mandatos. Oferecemos soluções em planejamento estratégico,
+          produção de conteúdo, comunicação institucional, gestão de crises e Assessoria Jurídica.
+        </p>
+        <p>
+          Trabalhamos para fortalecer a <strong>imagem pública</strong> de <strong>lideranças</strong>, construir conexões com a sociedade e transformar estratégias em resultados.
+        </p>
+        <p>
+          Da <strong>pré-campanha ao mandato</strong> — a gente cuida da sua imagem.
+        </p>
         <div class="about-stats">
           <div class="stat"><span class="stat-num">5</span><span class="stat-label">Assessoria de imprensa</span></div>
           <div class="stat"><span class="stat-num">7</span><span class="stat-label">Projetos em Articulação</span></div>
@@ -969,6 +1243,7 @@
         <h2 class="section-title">Sua marca <span class="accent">vista, ouvida e escolhida</span> na internet.</h2>
         <p class="section-sub">Estratégia, conteúdo e performance para o seu negócio aparecer no momento certo, para a pessoa certa.</p>
       </div>
+
       <div class="services-grid">
         <article class="service-card">
           <div class="service-icon" style="--icon-color:#E87722">
@@ -978,6 +1253,7 @@
           <p>Posts, artes e textos pensados para engajar, converter e fortalecer a identidade da sua marca.</p>
           <span class="service-num">01</span>
         </article>
+
         <article class="service-card">
           <div class="service-icon" style="--icon-color:#1E3A5F">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
@@ -986,6 +1262,7 @@
           <p>Planejamento, publicação e acompanhamento das suas redes sociais com consistência e resultado.</p>
           <span class="service-num">02</span>
         </article>
+
         <article class="service-card">
           <div class="service-icon" style="--icon-color:#E87722">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 16l4-4 4 4 5-6"/></svg>
@@ -994,6 +1271,7 @@
           <p>Campanhas pagas no Meta e Google com segmentação, otimização e relatórios de desempenho.</p>
           <span class="service-num">03</span>
         </article>
+
         <article class="service-card">
           <div class="service-icon" style="--icon-color:#1E3A5F">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
@@ -1006,7 +1284,7 @@
     </div>
   </section>
 
-  <!-- SEÇÃO CEO -->
+  <!-- CEO -->
   <section class="services services-alt" id="grafico">
     <div class="container">
       <div class="section-head">
@@ -1014,18 +1292,19 @@
         <h2 class="section-title">Do <span class="accent">cartão de visita</span> ao video institucional ou publicitário.</h2>
         <p class="section-sub">Peças impressas e digitais com design profissional, acabamento impecável e pronta entrega.</p>
       </div>
+
       <div class="graphic-grid">
         <div class="graphic-item fade-in">
           <div class="graphic-card">
             <div class="graphic-img-wrapper">
-              <img class="graphic-img" src="https://i.imgur.com/3peOnM7.jpeg" alt="Eduardo Lima — CEO da Livre Imagem" loading="lazy" />
+              <img class="graphic-img" src="https://i.imgur.com/3peOnM7.jpeg" alt="Banner — Marketing Digital" loading="lazy" />
               <div class="graphic-img-overlay"></div>
             </div>
             <div class="graphic-card-info">
               <span class="graphic-card-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 21V3"/><path d="M16 21V3"/></svg>
               </span>
-              <h4>Eduardo Lima — CEO da Livre Imagem</h4>
+              <h4><br>Eduardo Lima<br> <br>CEO da Livre Imagem<br> </h4>
               <p>Técnico em Marketing, Produtor Musical e Audiovisual, Empresário do ramo da Publicidade e Diretor de Portais de Notícias. Ativista político desde 2002, possui experiência prática como candidato em disputas eleitorais para os cargos de vereador, deputado estadual, deputado federal e vice-prefeito, acumulando conhecimento aprofundado sobre estratégia eleitoral, comunicação política, mobilização de lideranças, relacionamento com o eleitorado e construção de imagem pública.</p>
             </div>
           </div>
@@ -1054,7 +1333,7 @@
         <article class="portfolio-case fade-in" data-category="politico">
           <div class="case-visual">
             <div class="case-img-wrapper">
-              <img class="case-img" src="https://i.imgur.com/SsOs8Gh.jpeg" alt="Planejamento Estratégico — Carlos Manato" loading="lazy" />
+              <img class="case-img" src="https://i.imgur.com/SsOs8Gh.jpeg" alt="Carlos Manato" loading="lazy" />
             </div>
           </div>
           <div class="case-content">
@@ -1068,7 +1347,7 @@
               <p><strong>Resultados:</strong> Essa experiência reforça nossa capacidade de transformar dados, planejamento e diálogo político em estratégias sólidas para campanhas e mandatos.</p>
             </div>
             <div class="case-footer">
-              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20solicitar%20uma%20proposta%20para%20Marketing%20Pol%C3%ADtico." target="_blank" rel="noopener">
+              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
                 Quero um projeto como este
               </a>
@@ -1079,7 +1358,7 @@
         <article class="portfolio-case fade-in" data-category="politico">
           <div class="case-visual">
             <div class="case-img-wrapper">
-              <img class="case-img" src="https://i.imgur.com/mW8sdCs.jpeg" alt="Comunicação Política — Gilvan da Federal" loading="lazy" />
+              <img class="case-img" src="https://i.imgur.com/mW8sdCs.jpeg" alt="Gilvan da Federal" loading="lazy" />
             </div>
           </div>
           <div class="case-content">
@@ -1093,7 +1372,7 @@
               <p><strong>Resultados:</strong> Fortalecimento da comunicação política e institucional, ampliando a visibilidade das ações e projetos parlamentares junto à sociedade.</p>
             </div>
             <div class="case-footer">
-              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20solicitar%20um%20projeto%20de%20Marketing%20Pol%C3%ADtico." target="_blank" rel="noopener">
+              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
                 Quero um projeto como este
               </a>
@@ -1104,7 +1383,7 @@
         <article class="portfolio-case fade-in" data-category="politico">
           <div class="case-visual">
             <div class="case-img-wrapper">
-              <img class="case-img" src="https://i.imgur.com/x0pwA3C.jpeg" alt="Campanha Majoritária — Serra ES 2020" loading="lazy" />
+              <img class="case-img" src="https://i.imgur.com/x0pwA3C.jpeg" alt="Fábio Duarte" loading="lazy" />
             </div>
           </div>
           <div class="case-content">
@@ -1115,10 +1394,10 @@
             <div class="case-body">
               <p><strong>O Trabalho Realizado:</strong> Em 2020, participamos da campanha do então candidato a prefeito da Serra, Fábio Duarte. Durante o segundo turno das eleições, assumimos a gestão de tráfego digital.</p>
               <p><strong>Objetivo:</strong> Ampliar o alcance e engajamento da campanha por meio da gestão de tráfego digital e estratégias de comunicação segmentadas.</p>
-              <p><strong>Resultados:</strong> Crescimento expressivo no segundo turno, com duplicação da votação em relação ao primeiro turno, mesmo com redução significativa dos recursos disponíveis.</p>
+              <p><strong>Resultados:</strong> Crescimento expressivo do desempenho eleitoral no segundo turno, com a duplicação da votação em relação ao primeiro turno.</p>
             </div>
             <div class="case-footer">
-              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20solicitar%20um%20projeto%20de%20Marketing%20Pol%C3%ADtico." target="_blank" rel="noopener">
+              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
                 Quero um projeto como este
               </a>
@@ -1129,7 +1408,7 @@
         <article class="portfolio-case fade-in" data-category="politico">
           <div class="case-visual">
             <div class="case-img-wrapper">
-              <img class="case-img" src="https://i.imgur.com/I96uHUQ.jpeg" alt="Estratégia Eleitoral — Vitória ES 2024" loading="lazy" />
+              <img class="case-img" src="https://i.imgur.com/I96uHUQ.jpeg" alt="Lorenzo Pazolini" loading="lazy" />
             </div>
           </div>
           <div class="case-content">
@@ -1138,12 +1417,12 @@
               <h3 class="case-title">2024 | Estratégia Eleitoral – Vitória (ES)</h3>
             </div>
             <div class="case-body">
-              <p><strong>O Trabalho Realizado:</strong> Em 2024, participamos de um projeto estratégico voltado à reeleição de Lorenzo Pazolini. O trabalho teve como foco o fortalecimento da aprovação da gestão municipal e o posicionamento estratégico do candidato perante o eleitorado.</p>
+              <p><strong>O Trabalho Realizado:</strong> Em 2024, participamos de um projeto estratégico voltado à reeleição de Lorenzo Pazolini.</p>
               <p><strong>Objetivo:</strong> Consolidar a liderança eleitoral e criar as condições necessárias para uma vitória ainda no primeiro turno.</p>
-              <p><strong>Resultados:</strong> Reeleição confirmada em primeiro turno, demonstrando a importância do planejamento e da comunicação eficiente.</p>
+              <p><strong>Resultados:</strong> Confirmação da reeleição em primeiro turno, demonstrando a importância do planejamento e da comunicação eficiente.</p>
             </div>
             <div class="case-footer">
-              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20solicitar%20um%20projeto%20de%20Marketing%20Pol%C3%ADtico." target="_blank" rel="noopener">
+              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
                 Quero um projeto como este
               </a>
@@ -1154,7 +1433,7 @@
         <article class="portfolio-case fade-in" data-category="politico">
           <div class="case-visual">
             <div class="case-img-wrapper">
-              <img class="case-img" src="https://i.imgur.com/bPbh1HC.jpeg" alt="Posicionamento Político — Marcos do Val" loading="lazy" />
+              <img class="case-img" src="https://i.imgur.com/bPbh1HC.jpeg" alt="Marcos do Val" loading="lazy" />
             </div>
           </div>
           <div class="case-content">
@@ -1163,12 +1442,12 @@
               <h3 class="case-title">Posicionamento Político & Reconexão Eleitoral — Marcos do Val</h3>
             </div>
             <div class="case-body">
-              <p><strong>O Trabalho Realizado:</strong> Ao longo de 2025, colaboramos em ações estratégicas de comunicação e posicionamento político voltadas ao fortalecimento da presença pública do senador Marcos do Val junto ao eleitorado conservador.</p>
+              <p><strong>O Trabalho Realizado:</strong> Ao longo de 2025, colaboramos em ações estratégicas de comunicação e posicionamento político do senador Marcos do Val.</p>
               <p><strong>Objetivo:</strong> Consolidar sua presença nos principais debates e espaços de mobilização da direita brasileira.</p>
-              <p><strong>Resultados:</strong> Ampliamos a visibilidade de sua atuação ao lado do ex-presidente Jair Bolsonaro, reforçando sua identificação com o eleitorado conservador.</p>
+              <p><strong>Resultados:</strong> Ampliação da visibilidade de sua atuação ao lado do ex-presidente Jair Bolsonaro, reforçando sua identificação com esse segmento do eleitorado.</p>
             </div>
             <div class="case-footer">
-              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20solicitar%20um%20projeto%20de%20Marketing%20Pol%C3%ADtico." target="_blank" rel="noopener">
+              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
                 Quero um projeto como este
               </a>
@@ -1179,7 +1458,7 @@
         <article class="portfolio-case fade-in" data-category="politico">
           <div class="case-visual">
             <div class="case-img-wrapper">
-              <img class="case-img" src="https://i.imgur.com/98BxFzL.png" alt="Reposicionamento — Evair de Melo" loading="lazy" />
+              <img class="case-img" src="https://i.imgur.com/98BxFzL.png" alt="Evair de Melo" loading="lazy" />
             </div>
           </div>
           <div class="case-content">
@@ -1188,12 +1467,12 @@
               <h3 class="case-title">Reposicionamento de Imagem & Comunicação Política — Evair de Melo</h3>
             </div>
             <div class="case-body">
-              <p><strong>O Trabalho Realizado:</strong> Entre 2023 e 2024, colaboramos com o deputado federal Evair de Melo em um processo de fortalecimento de sua comunicação e reposicionamento de imagem junto ao eleitorado conservador.</p>
-              <p><strong>Objetivo:</strong> Consolidar uma comunicação mais assertiva e alinhada ao estilo político do parlamentar, ampliando sua presença nos debates estaduais e nacionais.</p>
-              <p><strong>Resultados:</strong> Ampliamos sua presença no debate político estadual e nacional, consolidando seu protagonismo entre as principais lideranças conservadoras do Espírito Santo.</p>
+              <p><strong>O Trabalho Realizado:</strong> Entre 2023 e 2024, colaboramos com o deputado federal Evair de Melo no fortalecimento de sua comunicação e reposicionamento de imagem.</p>
+              <p><strong>Objetivo:</strong> Consolidar uma comunicação mais assertiva e alinhada ao estilo político do parlamentar.</p>
+              <p><strong>Resultados:</strong> Reconhecimento de seu nome entre os principais representantes do conservadorismo capixaba nos debates sobre a sucessão ao Senado Federal.</p>
             </div>
             <div class="case-footer">
-              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20solicitar%20um%20projeto%20de%20Marketing%20Pol%C3%ADtico." target="_blank" rel="noopener">
+              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
                 Quero um projeto como este
               </a>
@@ -1204,7 +1483,7 @@
         <article class="portfolio-case fade-in" data-category="politico">
           <div class="case-visual">
             <div class="case-img-wrapper">
-              <img class="case-img" src="https://i.imgur.com/3fmdKwx.jpeg" alt="Eleições 2024 — Colaboração com Candidatos" loading="lazy" />
+              <img class="case-img" src="https://i.imgur.com/3fmdKwx.jpeg" alt="Eleições 2024" loading="lazy" />
             </div>
           </div>
           <div class="case-content">
@@ -1213,12 +1492,12 @@
               <h3 class="case-title">Eleições 2024 — Colaboração com Candidatos e Lideranças</h3>
             </div>
             <div class="case-body">
-              <p><strong>O Trabalho Realizado:</strong> Durante as eleições de 2024, a Agência Livre Imagem participou de projetos políticos em diferentes níveis, contribuindo com planejamento estratégico, comunicação, produção de conteúdo e análise de cenários.</p>
-              <p><strong>Objetivo:</strong> Construir estratégias personalizadas capazes de potencializar resultados eleitorais, fortalecer marcas políticas e ampliar a conexão entre lideranças e eleitores.</p>
-              <p><strong>Resultados:</strong> Colaboramos com candidatos majoritários e proporcionais, desenvolvendo soluções em marketing político, inteligência estratégica e comunicação de campanha.</p>
+              <p><strong>O Trabalho Realizado:</strong> Durante as eleições de 2024, a Agência Livre Imagem participou de projetos políticos em diferentes níveis.</p>
+              <p><strong>Objetivo:</strong> Construir estratégias personalizadas capazes de potencializar resultados eleitorais.</p>
+              <p><strong>Resultados:</strong> Colaboramos com candidatos majoritários e proporcionais, desenvolvendo soluções em marketing político e comunicação de campanha.</p>
             </div>
             <div class="case-footer">
-              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20solicitar%20um%20projeto%20de%20Marketing%20Pol%C3%ADtico." target="_blank" rel="noopener">
+              <a class="btn btn-primary btn-sm" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
                 Quero um projeto como este
               </a>
@@ -1229,7 +1508,7 @@
       </div>
 
       <div class="portfolio-more fade-in">
-        <a class="btn btn-outline" href="https://wa.me/5527995063031?text=Ol%C3%A1!%20Quero%20ver%20mais%20cases%20de%20sucesso%20da%20Ag%C3%AAncia%20Livre%20Imagem." target="_blank" rel="noopener">
+        <a class="btn btn-outline" href="https://wa.me/5527995063031" target="_blank" rel="noopener">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zM12.04 21.785h-.01a9.87 9.87 0 0 1-5.032-1.378l-.36-.214-3.742.982.999-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884zm8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
           Conversar e ver mais cases no WhatsApp
         </a>
@@ -1242,7 +1521,8 @@
     <div class="container cta-inner">
       <span class="section-tag" style="color:#FFC4B8">VAMOS CONVERSAR</span>
       <h2 class="cta-title">
-        Pronto para <span style="color:#FFD54F">iniciar uma trajetória</span> de sucesso?
+        Pronto para <span style="color:#FFD54F">iniciar uma trajetória</span>
+        de sucesso?
       </h2>
       <p class="cta-sub">
         Agende agora uma reunião de triagem gratuita. Vamos conhecer você, entender melhor o seu perfil, os seus objetivos e desenhar, juntos, o melhor caminho para alcançar seus resultados.
@@ -1293,10 +1573,11 @@
   </a>
 
   <script>
-    // ===== HEADER SCROLL =====
+    // ===== HEADER DINÂMICO NO SCROLL =====
     const header = document.getElementById('header');
     const onScroll = () => {
-      header.classList.toggle('scrolled', window.scrollY > 20);
+      if (window.scrollY > 20) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
     };
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
@@ -1308,6 +1589,7 @@
       menuToggle.classList.toggle('open');
       nav.classList.toggle('open');
     });
+
     nav.querySelectorAll('a').forEach(a => {
       a.addEventListener('click', () => {
         menuToggle.classList.remove('open');
@@ -1315,15 +1597,16 @@
       });
     });
 
-    // ===== DROPDOWN NOTÍCIAS =====
-    (function () {
+    // ===== NAV DROPDOWN =====
+    (function() {
       const dropdown = document.getElementById('navDropdown');
       if (!dropdown) return;
       const toggle = dropdown.querySelector('.nav-dropdown-toggle');
       toggle.addEventListener('click', (e) => {
         e.preventDefault();
         dropdown.classList.toggle('open');
-        toggle.setAttribute('aria-expanded', dropdown.classList.contains('open'));
+        const isOpen = dropdown.classList.contains('open');
+        toggle.setAttribute('aria-expanded', isOpen);
       });
       dropdown.querySelectorAll('.nav-dropdown-menu a').forEach(link => {
         link.addEventListener('click', () => {
@@ -1349,23 +1632,24 @@
         const target = document.querySelector(href);
         if (!target) return;
         e.preventDefault();
-        const top = target.getBoundingClientRect().top + window.pageYOffset - header.offsetHeight;
+        const headerHeight = header.offsetHeight;
+        const top = target.getBoundingClientRect().top + window.pageYOffset - headerHeight;
         window.scrollTo({ top, behavior: 'smooth' });
       });
     });
 
-    // ===== VIDEO PLAYER (Facade / Lazy Load) =====
+    // ===== VIDEO YOUTUBE — FACADE =====
     (function () {
       const wrapper = document.getElementById('videoWrapper');
       if (!wrapper) return;
 
-      const facade = document.getElementById('videoFacade');
+      const facade = wrapper.querySelector('.video-facade');
+      const playBtn = wrapper.querySelector('.video-play-btn');
+      const facadeImg = wrapper.querySelector('.video-facade-img');
       const videoId = wrapper.dataset.videoId;
 
-      // Fallback thumbnail
-      const thumb = wrapper.querySelector('.video-facade-img');
-      if (thumb) {
-        thumb.addEventListener('error', function () {
+      if (facadeImg) {
+        facadeImg.addEventListener('error', function() {
           this.src = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
         });
       }
@@ -1375,33 +1659,31 @@
 
         const iframe = document.createElement('iframe');
         iframe.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1&color=white`;
-        iframe.title = 'Vídeo de apresentação — Agência Livre Imagem';
+        iframe.title = 'Vídeo de apresentação';
         iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
         iframe.allowFullscreen = true;
+        iframe.setAttribute('loading', 'lazy');
 
         wrapper.appendChild(iframe);
         wrapper.classList.add('is-playing');
       }
 
-      facade.addEventListener('click', loadVideo);
+      if (facade) facade.addEventListener('click', loadVideo);
+      if (playBtn) playBtn.addEventListener('click', (e) => { e.stopPropagation(); loadVideo(); });
     })();
 
-    // ===== ANIMAÇÕES FADE-IN =====
-    const fadeSelectors = [
-      '.hero-tag', '.hero-title', '.hero-sub', '.hero-video',
-      '.hero-ctas', '.hero-badges',
+    // ===== ANIMAÇÕES DE ENTRADA =====
+    const fadeEls = [
+      '.hero-title', '.hero-sub', '.hero-ctas', '.hero-badges',
       '.about-text', '.about-visual',
       '.section-head',
       '.service-card', '.graphic-item',
       '.cta-inner'
     ];
-
-    fadeSelectors.forEach(sel => {
+    fadeEls.forEach(sel => {
       document.querySelectorAll(sel).forEach((el, i) => {
-        if (!el.classList.contains('fade-in')) {
-          el.classList.add('fade-in');
-          el.style.transitionDelay = (i % 4) * 80 + 'ms';
-        }
+        el.classList.add('fade-in');
+        el.style.transitionDelay = (i % 4) * 80 + 'ms';
       });
     });
 
@@ -1412,16 +1694,16 @@
           io.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
     document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
 
-    // ===== PORTFOLIO CASES =====
-    (function () {
+    // ===== CASES =====
+    (function() {
       const cases = document.querySelectorAll('.portfolio-case');
       cases.forEach((item, i) => {
         item.classList.add('fade-in');
-        item.style.transitionDelay = (i % 2) * 100 + 'ms';
+        item.style.transitionDelay = (i % 2) * 120 + 'ms';
       });
       const caseObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -1430,29 +1712,28 @@
             caseObserver.unobserve(entry.target);
           }
         });
-      }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
       cases.forEach(item => caseObserver.observe(item));
     })();
 
-    // ===== FILTROS PORTFOLIO =====
-    (function () {
+    // ===== FILTROS =====
+    (function() {
       const filterBtns = document.querySelectorAll('.filter-btn');
       const portfolioCases = document.querySelectorAll('.portfolio-case');
-      if (!filterBtns.length) return;
-
+      if (filterBtns.length === 0) return;
       filterBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           filterBtns.forEach(b => b.classList.remove('active'));
           btn.classList.add('active');
           const filter = btn.getAttribute('data-filter');
-
           portfolioCases.forEach((item, index) => {
-            const match = filter === 'all' || item.getAttribute('data-category') === filter;
-            if (match) {
+            const category = item.getAttribute('data-category');
+            const show = filter === 'all' || category === filter;
+            if (show) {
               item.classList.remove('filter-out');
               item.style.transitionDelay = (index * 50) + 'ms';
               item.classList.add('filter-in');
-              setTimeout(() => item.classList.remove('filter-in'), 600);
+              setTimeout(() => { item.classList.remove('filter-in'); }, 600);
             } else {
               item.classList.add('filter-out');
               item.classList.remove('filter-in');
